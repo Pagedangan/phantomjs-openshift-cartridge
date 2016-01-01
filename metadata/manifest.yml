@@ -1,0 +1,46 @@
+Name: phantomjs
+Cartridge-Short-Name: PHANTOMJS
+Display-Name: phantomjs
+Version: "2.0.1"
+Versions: ["2.0.1"]
+Website: https://github.com/pagedangan/phantomjs-openshift-cartridge
+Cartridge-Version: 0.0.2
+Cartridge-Vendor: Pagedangan
+Categories:
+  - service
+  - phantomjs
+  - webdriver
+Provides:
+  - phantomjs-2.0.1
+  - ghostdriver
+Scaling:
+  Min: 1
+  Max: -1
+Cart-Data:
+  - Key: OPENSHIFT_PHANTOMJS_PORT
+    Type: environment
+    Description: "Internal port to which the web-framework binds to."
+  - Key: OPENSHIFT_PHANTOMJS_IP
+    Type: environment
+    Description: "Internal IP to which the web-framework binds to."
+Group-Overrides:
+  - components:
+    - phantomjs-2.0.1
+    - web_proxy
+Endpoints:
+  - Private-IP-Name:   IP
+    Private-Port-Name: PORT
+    Private-Port:      8080
+    Private-Version-Name: VERSION
+    private-Version:      2.0.1
+
+    Public-Port-Name:  PROXY_PORT
+    Mappings:
+      - Frontend:      ""
+        Backend:       ""
+        Options:       { websocket: true }
+      - Frontend:      ""
+        Backend:       ""
+        Options:       { health: true }
+Install-Build-Required: false
+Source-Url: https://github.com/pagedangan/phantomjs-openshift-cartridge/archive/master.zip

@@ -7,8 +7,8 @@ PHANTOMJS_PID_FILE=$OPENSHIFT_PHANTOMJS_DIR/run/phantomjs.pid
 function start() {
 	echo "Starting phantomjs"
 	if [ -f "$PHANTOMJS_EXEC" ]; then
-		if [ -f "$OPENSHIFT_PHANTOMJS_DIR/phantomjs.conf.erb" ]; then
-			oo-erb $OPENSHIFT_PHANTOMJS_DIR/phantomjs.conf.erb > $OPENSHIFT_PHANTOMJS_DIR/phantomjs.json
+		if [ -f "$OPENSHIFT_PHANTOMJS_DIR/conf/phantomjs.conf.erb" ]; then
+			oo-erb $OPENSHIFT_PHANTOMJS_DIR/conf/phantomjs.conf.erb > $OPENSHIFT_PHANTOMJS_DIR/conf/phantomjs.json
 		fi
 		# phantomjs will always use the prefix defined at compile time unless an absolute path to the conf file is given
 		nohup "$PHANTOMJS_EXEC" --config="$PHANTOMJS_CONFIG_FILE"  2>&1

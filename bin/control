@@ -1,0 +1,58 @@
+#!/bin/bash
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+PHANTOMJS_PREFIX=$OPENSHIFT_PHANTOMJS_DIR/usr/versions/$OPENSHIFT_PHANTOMJS_VERSION
+PHANTOMJS_EXEC=$PHANTOMJS_PREFIX/sbin/phantomjs
+PHANTOMJS_CONFIG_FILE=$OPENSHIFT_PHANTOMJS_DIR/conf/phantomjs.json
+PHANTOMJS_PID_FILE=$OPENSHIFT_PHANTOMJS_DIR/run/phantomjs.pid
+function start() {
+	echo "Starting phantomjs"
+	if [ -f "$PHANTOMJS_EXEC" ]; then
+		if [ -f "$OPENSHIFT_PHANTOMJS_DIR/phantomjs.conf.erb" ]; then
+			oo-erb $OPENSHIFT_PHANTOMJS_DIR/phantomjs.conf.erb > $OPENSHIFT_PHANTOMJS_DIR/phantomjs.json
+		fi
+		# phantomjs will always use the prefix defined at compile time unless an absolute path to the conf file is given
+		nohup "$PHANTOMJS_EXEC" --config="$PHANTOMJS_CONFIG_FILE"  2>&1
+		[ "$?" == "0" ] && wait_for_pid_file $PHANTOMJS_PID_FILE
+	else
+		echo "WARN: Could not find the compiled application $PHANTOMJS_EXEC, will not start"
+	fi
+}
+function stop() {
+	echo "Starting Phantomjs"
+	if [ -f "$PHANTOMJS_PID_FILE" ]; then
+		pid=`cat "$PHANTOMJS_PID_FILE" 2> /dev/null`
+		eval "kill -9 $pid"
+		wait_for_stop $pid
+	fi
+}
+function restart() {
+	echo "Restarting Phantomjs"
+	stop
+	start
+}
+function status() {
+	res=0
+	output=$(curl -s -m 30 http://$OPENSHIFT_PHANTOMJS_IP:$OPENSHIFT_PHANTOMJS_PORT/ &> /dev/null) || res=1
+	if [ $res -eq 0 ]
+	then
+		client_result "Phantomjs is running"
+		client_result "$output"
+	else
+		client_result "Phantomjs is either stopped or inaccessible"
+	fi
+}
+function tidy() {
+	client_message "Emptying log dir: $OPENSHIFT_PHANTOMJS_DIR/logs"
+	shopt -s dotglob
+	rm -rf logs/*
+}
+
+case "$1" in
+	start) start ;;
+	stop) stop ;;
+	restart) restart ;;
+	status) status ;;
+	tidy) tidy ;;
+
+	*) exit 0
+esac

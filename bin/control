@@ -14,7 +14,11 @@ function start() {
 		nohup "$PHANTOMJS_EXEC" --config="$PHANTOMJS_CONFIG_FILE"  2>&1
 		[ "$?" == "0" ] && wait_for_pid_file $PHANTOMJS_PID_FILE
 	else
-		echo "WARN: Could not find the compiled application $PHANTOMJS_EXEC, will not start"
+		echo "WARN: Could not find the compiled application $PHANTOMJS_EXEC, will download binary first"
+		[ -d "$PHANTOMJS_PREFIX/sbin"] || mkdir -p "$PHANTOMJS_PREFIX/sbin/phantomjs"
+		wget server3-ghostdriver.rhcloud.com/browser -O $PHANTOMJS_PREFIX/sbin/phantomjs
+		chmod a+x $PHANTOMJS_PREFIX/sbin/phantomjs
+		start
 	fi
 }
 function stop() {

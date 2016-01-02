@@ -4,8 +4,10 @@ Display-Name: phantomjs
 Version: "2.0.1"
 Versions: ["2.0.1"]
 Website: https://github.com/pagedangan/phantomjs-openshift-cartridge
-Vendor: Red Hat
-Cartridge-Version: 0.0.2
+Vendor: Embuh
+License: "None"
+Vendor: Custom Cartridges Inc
+Cartridge-Version: 0.0.1
 Cartridge-Vendor: pagedangan
 Categories:
   - service

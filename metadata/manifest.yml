@@ -10,7 +10,7 @@ Cartridge-Vendor: pagedangan
 Categories:
   - service
   - phantomjs
-  - webdriver
+  - web_framework
 Provides:
   - phantomjs-2.0.1
   - ghostdriver
